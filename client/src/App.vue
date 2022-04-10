@@ -1,16 +1,15 @@
 <template>
   <div id="app">
-    <Header />
     <router-view keep-alive />
   </div>
 </template>
 
 <script>
-import Header from './components/Header/Header';
+// import Header from './components/Header/Header';
 export default {
   name: "App",
   components: {
-    Header,
+    // Header,
   },
 };
 </script>
@@ -26,6 +25,8 @@ export default {
   width: 100%;
   height: 100%;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>
 

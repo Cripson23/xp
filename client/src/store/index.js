@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
+import pois from "./pois"
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  namespaced: true,
+  modules: {
+    pois
+  },
 });
