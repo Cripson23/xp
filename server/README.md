@@ -1,17 +1,17 @@
 # Setup
-## Создание виртуального окружения
+## Create virtual environment
 ```
 python -m venv venv
 ```
-## Активация виртуального окружения
+## Activate environment
 ```
 source venv/bin/activate
 ```
-## Установка необходимых пакетов
+## Install packages
 ```
 pip install -r requirements.txt
 ```
-## Запуск приложения (http://localhost:5000)
+## Start app to http://localhost:5000
 ```
 python app.py
 ```
