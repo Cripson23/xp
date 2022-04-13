@@ -18,7 +18,7 @@ def db_connect():
 db = db_connect()
 
 
-@app.route('/api/objects', methods=['GET'])
+@app.route('/api/objects/', methods=['GET'])
 @cross_origin()
 def get_objects():
     all_objects = db.child("objects").get()
@@ -32,7 +32,7 @@ def get_objects():
     return jsonify(objects)
 
 
-@app.route('/api/objects/<string:obj_id>', methods=['GET'])
+@app.route('/api/objects/<string:obj_id>/', methods=['GET'])
 @cross_origin()
 def get_object(obj_id):
     obj = db.child("objects").child(obj_id).get()
@@ -45,7 +45,7 @@ def get_object(obj_id):
     return jsonify(dict_obj)
 
 
-@app.route('/api/objects', methods=['POST'])
+@app.route('/api/objects/', methods=['POST'])
 @cross_origin()
 def create_object():
     if not request.json or 'name' not in request.json or 'xObject' not in request.json or 'yObject' not in request.json \
@@ -65,7 +65,7 @@ def create_object():
     return jsonify(obj), 201
 
 
-@app.route('/api/objects/<string:obj_id>', methods=['PUT'])
+@app.route('/api/objects/<string:obj_id>/', methods=['PUT'])
 @cross_origin()
 def update_object(obj_id):
     obj = db.child("objects").child(obj_id).get()
@@ -88,7 +88,7 @@ def update_object(obj_id):
     return jsonify(dict_obj)
 
 
-@app.route('/api/objects/<string:obj_id>', methods=['DELETE'])
+@app.route('/api/objects/<string:obj_id>/', methods=['DELETE'])
 @cross_origin()
 def delete_object(obj_id):
     obj = db.child("objects").child(obj_id).get()
