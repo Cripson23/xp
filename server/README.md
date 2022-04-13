@@ -14,6 +14,7 @@ python app.py
 ```
 
 ## API
+###get objects [GET]
 ```
-NULL
+/api/objects
 ```
