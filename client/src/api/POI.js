@@ -20,12 +20,13 @@ export class POI extends Requester {
     }
   }
   async getPOIs() {
-    let res = [];
-    let test = this.generateTest()
-    for(let i = 0; i < 10; i++) {
-      res.push(test.next().value);
-    }
-    return res;
-    // return await this.get('/objects/');
+    // let res = [];
+    // let test = this.generateTest()
+    // for(let i = 0; i < 10; i++) {
+    //   res.push(test.next().value);
+    // }
+    // return res;
+    let resp =  await this.get('/objects/');
+    console.log(resp);
   }
 }

@@ -19,4 +19,13 @@
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: width .3s ease,
+              height .3s ease;
+  z-index: 1;
+
+  &:hover {
+    width: 60px;
+    height: 60px;
+    z-index: 2;
+  }
 }
