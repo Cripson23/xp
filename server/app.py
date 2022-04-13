@@ -15,11 +15,6 @@ def db_connect():
 db = db_connect()
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
 @app.route('/api/objects', methods=['GET'])
 def get_objects():
     all_objects = db.child("objects").get()
@@ -95,6 +90,11 @@ def delete_object(obj_id):
     db.child("objects").child(obj_id).remove()
 
     return jsonify({'result': True})
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == '__main__':
