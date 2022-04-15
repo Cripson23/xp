@@ -39,6 +39,7 @@ The request must contain: In Authorization Data - username, password
 /api/login/
 ```
 Returns: duration (day), moderator (true/false), token
+
 Add token in Authorization Data for all requests
 
 ## Objects
