@@ -92,7 +92,8 @@ The request must contain: Form data - file, year
 /api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all MODERATED images urls list by object ID [method=GET]
+### Get all (moderated) images urls list by object ID [method=GET]
+Required param: moderated (true/false)
 ```
 /api/objects/<string:object_id>/images/
 ```
