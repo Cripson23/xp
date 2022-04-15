@@ -84,6 +84,7 @@ object_id - ID объекта
 year - Год изображения
 image_id - ID изображения
 image_name - Название изображения в хранилище
+moderate_status - статус прохождения модерации
 ```
 
 ### Upload image [method=POST]
