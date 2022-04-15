@@ -2,12 +2,16 @@
   <aside class="feature-details">
     <div class="feature-details__header">
       <div class="feature-details__name">
-        {{feature.name}}
+        <h1>{{feature.name}}</h1>
       </div>
 
-      <UButton class="feature-details__close" @click="$emit('closeDetails')" rounded hover>
-        X
+      <UButton class="feature-details__close" @click="$emit('closeDetails')" rounded hover :width="25" :height="25">
+        <fa-icon icon="fa-solid fa-xmark" />
       </UButton>
+    </div>
+
+    <div class="feature-details__body">
+      {{feature.descriptionObject}}
     </div>
   </aside>
 </template>

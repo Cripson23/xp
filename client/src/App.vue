@@ -1,16 +1,17 @@
 <template>
   <div id="app">
+    <Navigation/>
     <router-view keep-alive />
   </div>
 </template>
 
 <script>
-// import Header from './components/Header/Header';
+import Navigation from './components/Navigation/Navigation';
 export default {
   name: "App",
   components: {
-    // Header,
-  },
+    Navigation,
+  }
 };
 </script>
 

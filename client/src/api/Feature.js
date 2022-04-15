@@ -1,7 +1,7 @@
 import {Requester} from './Requester';
 
 
-export class POI extends Requester {
+export class Feature extends Requester {
   random(min, max) {
     return Math.random() * (max - min) + min;
   }
@@ -20,7 +20,7 @@ export class POI extends Requester {
     }
   }
 
-  async getPOIs() {
+  async getFeatures() {
     let res = [];
     let generator = this.generateTest();
     for (let i = 0; i < 10; i++) {
@@ -29,6 +29,13 @@ export class POI extends Requester {
     res = [...res, ...await this.get('/objects')];
 
     return res;
+
+  }
+
+  async createFeature(featureData) {
+    let res = await this.post('/objects/', featureData);
+
+    console.log('res: ', JSON.parse(JSON.stringify(res)));
 
   }
 }

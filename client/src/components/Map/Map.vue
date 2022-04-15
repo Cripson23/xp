@@ -60,9 +60,9 @@ export default {
 
     getPopupElement(feature) {
       let wrapper = createElement({tag: 'div', classList: ['list-view--horizontal', 'flex']});
-      let btn = createElement({tag: 'button'});
+      let btn = createElement({tag: 'button', classList: ['map__balloon-button']});
       btn.innerText = 'Подробнее';
-      wrapper.innerHTML = `<h1>${feature.name}</h1><span>${feature.descriptionObject}</span>`;
+      wrapper.innerHTML = `<h1>${feature.name}</h1>`;
       btn.addEventListener('click', this.openDetails.bind(this, feature));
       wrapper.appendChild(btn);
       return wrapper;
