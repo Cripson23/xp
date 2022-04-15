@@ -93,7 +93,7 @@ The request must contain: Form data - file, year
 ```
 
 ### Get all (moderated) images urls list by object ID [method=GET]
-Required param: moderated (true/false)
+Param: moderated (true/false) (default: false)
 ```
 /api/objects/<string:object_id>/images/
 ```
