@@ -1,7 +1,10 @@
+cffi==1.15.0
 click==8.1.2
 colorama==0.4.4
+cryptography==36.0.2
 Flask==2.1.1
 Flask-Cors==3.0.10
+Flask-HTTPAuth==4.5.0
 gcloud==0.17.0
 googleapis-common-protos==1.56.0
 httplib2==0.20.4
@@ -14,7 +17,9 @@ oauth2client==3.0.0
 protobuf==3.20.1rc1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+pycparser==2.21
 pycryptodome==3.4.3
+PyJWT==2.3.0
 pyparsing==3.0.8
 Pyrebase==3.0.27
 python-jwt==2.0.1
