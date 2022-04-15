@@ -28,11 +28,11 @@ fio - ФИО
 birthday - Дата рождения
 gender - Пол (man/woman)
 ```
-### User registration [method='POST']
+### User registration [required=all JSON model fields | method='POST']
 ```
 /api/register/
 ```
-### User login [method='GET']
+### User login [required=Authorization Data: username, password | method='GET']
 ```
 /api/login/
 ```
@@ -54,22 +54,22 @@ yObject - Координата y на карте
 
 ### Get one object by ID [method=GET]
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
-### Push new object [method=POST]
+### Push new object [required=all JSON model fields | method=POST]
 ```
 /api/objects
 ```
 
-### Update object [method=PUT]
+### Update object [required=at least one JSON model field | method=PUT]
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
 ### Delete object by ID [method=DELETE]
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
 ## Images
@@ -83,10 +83,10 @@ image_name - Название изображения в хранилище
 
 ### Upload image [Form data: 'file', 'year' | method=POST]
 ```
-/api/objects/<string:obj_id>/upload-img/
+/api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all images urls list by object ID [method=POST]
+### Get all MODERATED images urls list by object ID [method=GET]
 ```
-/api/objects/<string:obj_id>/images/
+/api/objects/<string:object_id>/images/
 ```
