@@ -17,6 +17,29 @@ python app.py
 ```
 
 # API
+## Users
+### Model
+```
+id - Идентификатор пользователя
+username - Логин пользователя
+hash_password - Захешированный пароль
+moderator - Является ли пользователь модератором (true/false)
+fio - ФИО
+birthday - Дата рождения
+gender - Пол (man/woman)
+```
+### User registration [method='POST']
+The request must contain: all JSON model fields
+```
+/api/register/
+```
+### User login [method='GET']
+The request must contain: In Authorization Data - username, password 
+```
+/api/login/
+```
+Returns: duration (day), moderator (true/false), token 
+
 ## Objects
 ### Model
 ```
@@ -34,22 +57,24 @@ yObject - Координата y на карте
 
 ### Get one object by ID [method=GET]
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
 ### Push new object [method=POST]
+The request must contain: all JSON model fields
 ```
 /api/objects
 ```
 
 ### Update object [method=PUT]
+The request must contain: at least one JSON model field
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
 ### Delete object by ID [method=DELETE]
 ```
-/api/objects/<string:obj_id>
+/api/objects/<string:object_id>
 ```
 
 ## Images
@@ -61,12 +86,14 @@ image_id - ID изображения
 image_name - Название изображения в хранилище
 ```
 
-### Upload image [Form data: 'file', 'year' | method=POST]
+### Upload image [method=POST]
+The request must contain: Form data - file, year
 ```
-/api/objects/<string:obj_id>/upload-img/
+/api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all images urls list by object ID [method=POST]
+### Get all (moderated) images urls list by object ID [method=GET]
+Param: moderated (true/false) (default: false)
 ```
-/api/objects/<string:obj_id>/images/
+/api/objects/<string:object_id>/images/
 ```
