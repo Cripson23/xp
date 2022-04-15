@@ -8,25 +8,27 @@ export class POI extends Requester {
 
   *generateTest() {
     let counter = 0;
-    while(true) {
+    while (true) {
       counter++;
       yield {
         idObject: counter,
-        nameObject: `Test ${counter}`,
+        name: `Test ${counter}`,
         descriptionObject: `Description ${counter}`,
-        xObject: this.random(56.13360939239281, 56.25360478150062),
-        yObject: this.random(57.95713196221859, 58.01208284993545),
-      }
+        xObject: this.random(57.95713196221859, 58.01208284993545),
+        yObject: this.random(56.13360939239281, 56.25360478150062),
+      };
     }
   }
+
   async getPOIs() {
-    // let res = [];
-    // let test = this.generateTest()
-    // for(let i = 0; i < 10; i++) {
-    //   res.push(test.next().value);
-    // }
-    // return res;
-    let resp =  await this.get('/objects/');
-    console.log(resp);
+    let res = [];
+    let generator = this.generateTest();
+    for (let i = 0; i < 10; i++) {
+      res.push(generator.next().value);
+    }
+    res = [...res, ...await this.get('/objects')];
+
+    return res;
+
   }
 }

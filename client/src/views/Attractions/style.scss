@@ -21,3 +21,16 @@
     display: none;
   }
 }
+
+.feature-details__container {
+  --border-radios: 12px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 25vw;
+  background: white;
+  border-bottom-left-radius: var(--border-radios);
+  border-top-left-radius: var(--border-radios);
+  padding: 20px 30px;
+}

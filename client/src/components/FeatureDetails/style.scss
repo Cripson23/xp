@@ -1,0 +1,19 @@
+.feature-details {
+  width: 100%;
+  height: 100%;
+
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    padding: 5px;
+    border-radius: 50%;
+    border: none;
+
+    width: 20px;
+    height: 20px;
+
+  }
+}

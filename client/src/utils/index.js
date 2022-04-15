@@ -1,5 +1,7 @@
 export function createElement({tag = 'div', classList = null}) {
   let elem = document.createElement(tag);
-  elem.classList = classList;
+  if (classList) {
+    elem.classList.add(...classList);
+  }
   return elem;
 }
