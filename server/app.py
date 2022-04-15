@@ -235,7 +235,7 @@ def upload_object_img(obj_id):
     return jsonify({'result': True})
 
 
-# Получение всех прошедших модерацию изображений объекта
+# Получение всех прошедших изображений объекта
 @app.route('/api/objects/<string:obj_id>/images/', methods=['GET'])
 @auth.login_required
 @cross_origin()
