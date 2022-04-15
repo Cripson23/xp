@@ -28,14 +28,17 @@ fio - ФИО
 birthday - Дата рождения
 gender - Пол (man/woman)
 ```
-### User registration [required=all JSON model fields | method='POST']
+### User registration [method='POST']
+The request must contain: all JSON model fields
 ```
 /api/register/
 ```
-### User login [required=Authorization Data: username, password | method='GET']
+### User login [method='GET']
+The request must contain: In Authorization Data - username, password 
 ```
 /api/login/
 ```
+Returns: duration (day), moderator (true/false), token 
 
 ## Objects
 ### Model
