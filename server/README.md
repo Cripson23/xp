@@ -29,7 +29,7 @@ birthday - Дата рождения
 gender - Пол (man/woman)
 ```
 ### User registration [method='POST']
-The request must contain: all JSON model fields
+The request must contain: all model fields in JSON
 ```
 /api/register/
 ```
@@ -67,7 +67,7 @@ The request must contain: all JSON model fields
 ```
 
 ### Update object [method=PUT]
-The request must contain: at least one JSON model field
+The request must contain: at least one model field in JSON
 ```
 /api/objects/<string:object_id>
 ```
