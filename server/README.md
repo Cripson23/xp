@@ -60,12 +60,14 @@ yObject - Координата y на карте
 /api/objects/<string:object_id>
 ```
 
-### Push new object [required=all JSON model fields | method=POST]
+### Push new object [method=POST]
+The request must contain: all JSON model fields
 ```
 /api/objects
 ```
 
-### Update object [required=at least one JSON model field | method=PUT]
+### Update object [method=PUT]
+The request must contain: at least one JSON model field
 ```
 /api/objects/<string:object_id>
 ```
@@ -84,7 +86,8 @@ image_id - ID изображения
 image_name - Название изображения в хранилище
 ```
 
-### Upload image [Form data: 'file', 'year' | method=POST]
+### Upload image [method=POST]
+The request must contain: Form data - file, year
 ```
 /api/objects/<string:object_id>/upload-img/
 ```
