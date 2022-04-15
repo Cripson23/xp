@@ -51,3 +51,22 @@ yObject - Координата y на карте
 ```
 /api/objects/<string:obj_id>
 ```
+
+## Images
+### Model
+```
+object_id - ID объекта
+year - Год изображения
+image_id - ID изображения
+image_name - Название изображения в хранилище
+```
+
+### Upload image [Form data: 'file', 'year' | method=POST]
+```
+/api/objects/<string:obj_id>/upload-img/
+```
+
+### Get all images urls list by object ID [method=POST]
+```
+/api/objects/<string:obj_id>/images/
+```
