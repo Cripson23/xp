@@ -228,7 +228,7 @@ def upload_object_img(obj_id):
 
     save_path = year + "_" + date
     storage.child(obj_id).child(save_path).put(file_path)
-    db.child("images").child(obj_id).child(year).push({'user_id': '123', 'path': save_path, 'moderate_status': False})
+    db.child("images").child(obj_id).child(year).push({'user_id': g.user['id'], 'path': save_path, 'moderate_status': False})
 
     os.remove(file_path)
 
@@ -243,20 +243,34 @@ def get_object_images(obj_id):
     obj = db.child("objects").child(obj_id).get()
     if not obj.val():
         abort(404)
+    moderated = False
 
-    images = db.child("images").get()
+    if 'moderated' in request.args:
+        if request.args['moderated'] == "true":
+            moderated = True
+        else:
+            moderated = False
+
+
+    images = db.child("images").child(obj_id).get()
     images_dict = {
         'object_id': obj_id,
+        'images': {}
     }
 
-    for img in images.each():
-        for d in img.val().keys():
-            images_dict[d] = []
-            for img_info in img.val()[d].items():
-                if img_info[1]['moderate_status']:
-                    url = storage.child(obj_id).child(img_info[1]['path']).get_url(None)
-                    images_dict[d].append({
-                        'user_id': img_info[1]['user_id'],
+    if images.each() is not None:
+        for img in images.each():
+            year = img.key()
+            img_info = img.val()
+            for d in img.val().keys():
+                if moderated == img_info[d]['moderate_status']:
+                    if year not in images_dict['images']:
+                        images_dict['images'][year] = []
+
+                    url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
+                    images_dict['images'][year].append({
+                        'id': d,
+                        'user_id': img_info[d]['user_id'],
                         'url': url
                     })
 
