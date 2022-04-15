@@ -16,7 +16,29 @@ pip install -r requirements.txt
 python app.py
 ```
 
+# Authorization
+
 # API
+## Users
+### Model
+```
+id - Идентификатор пользователя
+username - Логин пользователя
+hash_password - Захешированный пароль
+moderator - Является ли пользователь модератором (true/false)
+fio - ФИО
+birthday - Дата рождения
+gender - Пол (man/woman)
+```
+### User registration [method='POST']
+```
+/api/register/
+```
+### User login [method='GET']
+```
+/api/login/
+```
+
 ## Objects
 ### Model
 ```
