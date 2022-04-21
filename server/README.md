@@ -95,7 +95,19 @@ The request must contain: Form data - file, year
 /api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all (moderated) images urls list by object ID [method=GET]
+### Get all (moderated/unmoderated) images urls list by object ID [method=GET]
 ```
 /api/objects/<string:object_id>/images/
+```
+
+### Delete image by object ID and image ID [method=DELETE]
+```
+/api/objects/<string:obj_id>/images/<string:img_id>/
+```
+
+### Change moderate_status by object ID and image ID [method=PUT]
+The request must contain: moderate_status field in JSON (value=true/false)
+
+```
+/api/objects/<string:obj_id>/images/<string:img_id>/
 ```
