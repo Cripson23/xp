@@ -54,24 +54,24 @@ yObject - Координата y на карте
 
 ### Get all objects [method=GET]
 ```
-/api/objects
+/api/objects/
 ```
 
 ### Get one object by ID [method=GET]
 ```
-/api/objects/<string:object_id>
+/api/objects/<string:object_id>/
 ```
 
 ### Push new object [method=POST]
 The request must contain: all JSON model fields
 ```
-/api/objects
+/api/objects/
 ```
 
 ### Update object [method=PUT]
 The request must contain: at least one model field in JSON
 ```
-/api/objects/<string:object_id>
+/api/objects/<string:object_id>/
 ```
 
 ### Delete object by ID [method=DELETE]
