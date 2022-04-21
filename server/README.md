@@ -29,7 +29,7 @@ birthday - Дата рождения
 gender - Пол (man/woman)
 ```
 ### User registration [method='POST']
-The request must contain: all JSON model fields
+The request must contain: all model fields in JSON
 ```
 /api/register/
 ```
@@ -38,7 +38,9 @@ The request must contain: In Authorization Data - username, password
 ```
 /api/login/
 ```
-Returns: duration (day), moderator (true/false), token 
+Returns: duration (day), moderator (true/false), token
+
+Add token in Authorization Data for all requests
 
 ## Objects
 ### Model
@@ -67,7 +69,7 @@ The request must contain: all JSON model fields
 ```
 
 ### Update object [method=PUT]
-The request must contain: at least one JSON model field
+The request must contain: at least one model field in JSON
 ```
 /api/objects/<string:object_id>
 ```
@@ -84,6 +86,7 @@ object_id - ID объекта
 year - Год изображения
 image_id - ID изображения
 image_name - Название изображения в хранилище
+moderate_status - статус прохождения модерации
 ```
 
 ### Upload image [method=POST]
