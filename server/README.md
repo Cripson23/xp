@@ -23,7 +23,7 @@ python app.py
 id - Идентификатор пользователя
 username - Логин пользователя
 hash_password - Захешированный пароль
-moderator - Является ли пользователь модератором (true/false)
+moderator - Является ли пользователь модератором (0/1)
 fio - ФИО
 birthday - Дата рождения
 gender - Пол (man/woman)
@@ -86,7 +86,7 @@ object_id - ID объекта
 year - Год изображения
 image_id - ID изображения
 image_name - Название изображения в хранилище
-moderate_status - статус прохождения модерации
+moderate_status - статус прохождения модерации (0/1)
 ```
 
 ### Upload image [method=POST]
