@@ -43,7 +43,7 @@ def verify_password(username_or_token, password):
         if not user or not check_password_hash(user['hash_password'], password):
             return False
 
-        g.user = user
+    g.user = user
     return True
 
 
@@ -193,6 +193,7 @@ def delete_object(obj_id):
         abort(404)
 
     db.child("objects").child(obj_id).remove()
+    db.child("images").child(obj_id).remove()
 
     return jsonify({'result': True})
 
@@ -243,14 +244,6 @@ def get_object_images(obj_id):
     obj = db.child("objects").child(obj_id).get()
     if not obj.val():
         abort(404)
-    moderated = False
-
-    if 'moderated' in request.args:
-        if request.args['moderated'] == "true":
-            moderated = True
-        else:
-            moderated = False
-
 
     images = db.child("images").child(obj_id).get()
     images_dict = {
@@ -258,12 +251,30 @@ def get_object_images(obj_id):
         'images': {}
     }
 
+    moderated = None
+
+    if not g.user['moderator']:
+        moderated = True
+    elif g.user['moderator']:
+        moderated = False
+
     if images.each() is not None:
         for img in images.each():
             year = img.key()
             img_info = img.val()
             for d in img.val().keys():
-                if moderated == img_info[d]['moderate_status']:
+                if moderated:
+                    if img_info[d]['moderate_status'] == moderated:
+                        if year not in images_dict['images']:
+                            images_dict['images'][year] = []
+
+                        url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
+                        images_dict['images'][year].append({
+                            'id': d,
+                            'user_id': img_info[d]['user_id'],
+                            'url': url
+                        })
+                elif not moderated:
                     if year not in images_dict['images']:
                         images_dict['images'][year] = []
 
@@ -274,7 +285,71 @@ def get_object_images(obj_id):
                         'url': url
                     })
 
+
     return jsonify(images_dict)
+
+
+@app.route('/api/objects/<string:obj_id>/images/<string:img_id>/', methods=['DELETE'])
+@auth.login_required
+@cross_origin()
+def delete_image(obj_id, img_id):
+    image = db.child("images").child(obj_id).get()
+    if not image.val():
+        abort(404)
+
+    find_image = False
+
+    images = image.val()
+    for d in images.keys():
+        if img_id in images[d]:
+            # если изображение объекта в году только одно
+            if len(images[d]) <= 1:
+                # если год только один
+                if len(images.keys()) <= 1:
+                    # удаляем все изображения объекта
+                    db.child("images").child(obj_id).remove()
+                else:
+                    # удаляем все изображения за год
+                    db.child("images").child(obj_id).child(d).remove()
+            else:
+                db.child("images").child(obj_id).child(d).child(img_id).remove()
+            find_image = True
+            break
+
+    if not find_image:
+        return abort(404)
+    else:
+        return jsonify({'result': True})
+
+
+@app.route('/api/objects/<string:obj_id>/images/<string:img_id>/', methods=['PUT'])
+@auth.login_required
+@cross_origin()
+def change_img_moder_status(obj_id, img_id):
+    if not g.user['moderator']:
+        abort(403)
+
+    image = db.child("images").child(obj_id).get()
+    if not image.val():
+        abort(404)
+
+    if not request.json or (
+            'moderate_status' not in request.json):
+        abort(400)
+
+    find_image = False
+
+    images = image.val()
+    for d in images.keys():
+        if img_id in images[d]:
+            db.child("images").child(obj_id).child(d).child(img_id).update({'moderate_status': request.json['moderate_status']})
+            find_image = True
+            break
+
+    if not find_image:
+        return abort(404)
+    else:
+        return jsonify({'result': True})
 
 
 # Commons
