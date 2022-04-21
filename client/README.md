@@ -1,5 +1,10 @@
 # client
 
+## Init (Windows)
+```
+npm i -g npm-check-updates ncu -u npm install
+```
+
 ## Project setup
 ```
 yarn install
