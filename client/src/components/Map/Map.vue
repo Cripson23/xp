@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {Map, Marker} from 'maplibre-gl';
+import {Map, Marker, Popup} from 'maplibre-gl';
 import {createElement} from '../../utils';
 
 // ЭТО НЕБЕЗОПАСНО (с), но в энв файлы тупо лень выносить
@@ -33,8 +33,8 @@ export default {
         fadeDuration: 100,
         attributionControl: false,
         maplibreLogo: false,
-        // antialias: true,
-        // renderWorldCopies: false,
+        antialias: true,
+        renderWorldCopies: false,
       });
       this.map.on('load', this.mapLoaded);
     },
@@ -45,13 +45,28 @@ export default {
 
     fillFeatures() {
       this.features.forEach(feature => {
+        let popup = new Popup({offset: 25});
+        popup.setDOMContent(this.getPopupElement(feature));
         let marker = createElement({classList: ['marker']});
         marker.style.backgroundImage = `url(${SHLEPA_IMG_LINK})`;
         marker.addEventListener('click', () => this.$emit('featureClicked', feature));
-        new Marker(marker).setLngLat([feature.xObject, feature.yObject]).addTo(this.map);
+        new Marker(marker).setLngLat([feature.yObject, feature.xObject]).addTo(this.map).setPopup(popup);
       });
-    }
+    },
 
+    openDetails(feature) {
+      this.$emit('detailsClicked', feature);
+    },
+
+    getPopupElement(feature) {
+      let wrapper = createElement({tag: 'div', classList: ['list-view--horizontal', 'flex']});
+      let btn = createElement({tag: 'button', classList: ['map__balloon-button']});
+      btn.innerText = 'Подробнее';
+      wrapper.innerHTML = `<h1>${feature.name}</h1>`;
+      btn.addEventListener('click', this.openDetails.bind(this, feature));
+      wrapper.appendChild(btn);
+      return wrapper;
+    }
   },
 };
 </script>

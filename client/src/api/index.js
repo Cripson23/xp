@@ -1,7 +1,7 @@
-import {POI} from './POI';
+import {Feature} from './Feature';
 
 
-export const poiAPI = new POI({
+export const featureAPI = new Feature({
   baseUrl: '/api',
 });
 

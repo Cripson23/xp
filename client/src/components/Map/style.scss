@@ -21,11 +21,16 @@
   background-size: cover;
   transition: width .3s ease,
               height .3s ease;
-  z-index: 1;
 
   &:hover {
     width: 60px;
     height: 60px;
-    z-index: 2;
+    z-index: 1;
+  }
+}
+
+.map {
+  &__balloon-button {
+    margin-top: 15px;
   }
 }

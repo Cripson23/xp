@@ -1,19 +1,31 @@
 <template>
   <section class="attractions">
-    <div class="attractions-container attractions-container--list">
-      <List :items="items" direction="vertical"/>
-    </div>
     <div class="attractions-container attractions-container--map">
-      <Map :features="getMapFeatures"/>
+      <Map :features="getMapFeatures" @detailsClicked="openDetails"/>
     </div>
 
+    <transition name="slide-fade">
+      <div v-if="featureSelected" class="feature-details__container">
+        <FeatureDetails :feature="featureSelected" @closeDetails="closeDetails"/>
+      </div>
+    </transition>
+
+    <Actions :actions="getActions" @addObjectClicked="openAddObjectPopup"></Actions>
+    <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
+      <template #content>
+        <AddObjectForm @submit="handleCreateObject"></AddObjectForm>
+      </template>
+    </Popup>
   </section>
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters} from 'vuex';
 import Map from '../../components/Map/Map';
-import List from '../../components/List/List';
+import FeatureDetails from '../../components/FeatureDetails/FeatureDetails';
+import Actions from '../../components/Actions/Actions';
+import Popup from '../../components/UI/Popup/Popup';
+import AddObjectForm from '../../components/AddObjectForm/AddObjectForm';
 
 
 export default {
@@ -21,7 +33,10 @@ export default {
 
   components: {
     Map,
-    List,
+    FeatureDetails,
+    Actions,
+    Popup,
+    AddObjectForm,
   },
 
   data() {
@@ -32,23 +47,53 @@ export default {
           name: 111,
         },
       ],
+      featureSelected: null,
+      isAddObjectPopupOpened: false,
     };
   },
 
   methods: {
-    ...mapActions('pois', ['getAllPOIs']),
+    ...mapActions('features', ['fetchFeatures', 'createFeature']),
+
+    openDetails(feature) {
+      this.featureSelected = feature;
+    },
+
+    closeDetails() {
+      this.featureSelected = null;
+    },
+
+    openAddObjectPopup() {
+      this.isAddObjectPopupOpened = true;
+    },
+    closePopup() {
+      this.isAddObjectPopupOpened = false;
+    },
+
+    async handleCreateObject(data) {
+      let newFeatureData = Object.fromEntries(data.entries());
+      await this.createFeature(newFeatureData)
+    },
   },
 
   computed: {
-    ...mapGetters("pois", ["getPOIs"]),
+    ...mapGetters('features', ['getFeatures']),
 
     getMapFeatures() {
-      return this.getPOIs;
+      return this.getFeatures;
+    },
+
+    getActions() {
+      return [
+        {
+          text: 'Добавить объект',
+          clickEventName: 'addObjectClicked',
+        }];
     },
   },
 
   async mounted() {
-    await this.getAllPOIs();
+    await this.fetchFeatures();
   },
 };
 </script>

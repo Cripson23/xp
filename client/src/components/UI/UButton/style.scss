@@ -1,0 +1,27 @@
+.ui-button {
+  padding: 5px;
+  border: none;
+  background: rgb(172, 172, 172) none;
+  width: var(--width);
+  height: var(--height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+
+  &--rounded {
+    border-radius: 50%;
+  }
+
+  &--hover {
+    transition: background-color .3s ease;
+
+    &:hover {
+      background: rgb(142, 142, 142) none;
+    }
+  }
+}
