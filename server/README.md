@@ -23,7 +23,7 @@ python app.py
 id - Идентификатор пользователя
 username - Логин пользователя
 hash_password - Захешированный пароль
-moderator - Является ли пользователь модератором (0/1)
+moderator - Является ли пользователь модератором (true/false)
 fio - ФИО
 birthday - Дата рождения
 gender - Пол (man/woman)
@@ -86,7 +86,7 @@ object_id - ID объекта
 year - Год изображения
 image_id - ID изображения
 image_name - Название изображения в хранилище
-moderate_status - статус прохождения модерации (0/1)
+moderate_status - статус прохождения модерации (true/false)
 ```
 
 ### Upload image [method=POST]
@@ -96,7 +96,6 @@ The request must contain: Form data - file, year
 ```
 
 ### Get all (moderated) images urls list by object ID [method=GET]
-Param: moderated (true/false) (default: false)
 ```
 /api/objects/<string:object_id>/images/
 ```
