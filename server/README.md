@@ -54,24 +54,24 @@ yObject - Координата y на карте
 
 ### Get all objects [method=GET]
 ```
-/api/objects
+/api/objects/
 ```
 
 ### Get one object by ID [method=GET]
 ```
-/api/objects/<string:object_id>
+/api/objects/<string:object_id>/
 ```
 
 ### Push new object [method=POST]
 The request must contain: all JSON model fields
 ```
-/api/objects
+/api/objects/
 ```
 
 ### Update object [method=PUT]
 The request must contain: at least one model field in JSON
 ```
-/api/objects/<string:object_id>
+/api/objects/<string:object_id>/
 ```
 
 ### Delete object by ID [method=DELETE]
@@ -95,7 +95,19 @@ The request must contain: Form data - file, year
 /api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all (moderated) images urls list by object ID [method=GET]
+### Get all (moderated/unmoderated) images urls list by object ID [method=GET]
 ```
 /api/objects/<string:object_id>/images/
+```
+
+### Delete image by object ID and image ID [method=DELETE]
+```
+/api/objects/<string:obj_id>/images/<string:img_id>/
+```
+
+### Change moderate_status by object ID and image ID [method=PUT]
+The request must contain: moderate_status field in JSON (value=true/false)
+
+```
+/api/objects/<string:obj_id>/images/<string:img_id>/
 ```
