@@ -111,7 +111,6 @@ def register():
 
 # Objects
 @app.route('/api/objects/', methods=['GET'])
-@auth.login_required
 @cross_origin()
 def get_objects():
     all_objects = db.child("objects").get()
@@ -126,7 +125,6 @@ def get_objects():
 
 
 @app.route('/api/objects/<string:obj_id>/', methods=['GET'])
-@auth.login_required
 @cross_origin()
 def get_object(obj_id):
     obj = db.child("objects").child(obj_id).get()
@@ -135,6 +133,48 @@ def get_object(obj_id):
 
     dict_obj = obj.val()
     dict_obj['id'] = obj.key()
+
+    images = db.child("images").child(obj_id).get()
+
+    if g is None:
+        moderated = True
+    elif hasattr(g, 'user'):
+        if g.user['moderator']:
+            moderated = False
+        else:
+            moderated = True
+    else:
+        moderated = True
+
+    dict_obj['images'] = {}
+    if images.each() is not None:
+        for img in images.each():
+            year = img.key()
+            img_info = img.val()
+            for d in img.val().keys():
+                if moderated:
+                    if img_info[d]['moderate_status'] == moderated:
+                        if year not in dict_obj['images']:
+                            dict_obj['images'][year] = []
+
+                        url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
+                        dict_obj['images'][year].append({
+                            'id': d,
+                            'user_id': img_info[d]['user_id'],
+                            'url': url
+                        })
+                elif not moderated:
+                    if year not in dict_obj['images']:
+                        dict_obj['images'][year] = []
+
+                    url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
+                    dict_obj['images'][year].append({
+                        'id': d,
+                        'user_id': img_info[d]['user_id'],
+                        'url': url
+                    })
+    else:
+        dict_obj['images'] = None
 
     return jsonify(dict_obj)
 
@@ -238,7 +278,6 @@ def upload_object_img(obj_id):
 
 # Получение всех изображений объекта
 @app.route('/api/objects/<string:obj_id>/images/', methods=['GET'])
-@auth.login_required
 @cross_origin()
 def get_object_images(obj_id):
     obj = db.child("objects").child(obj_id).get()
@@ -253,7 +292,7 @@ def get_object_images(obj_id):
 
     moderated = None
 
-    if not g.user['moderator']:
+    if not g.user['moderator'] or g.user is None:
         moderated = True
     elif g.user['moderator']:
         moderated = False
@@ -293,6 +332,8 @@ def get_object_images(obj_id):
 @auth.login_required
 @cross_origin()
 def delete_image(obj_id, img_id):
+    if not g.user['moderator']:
+        abort(403)
     image = db.child("images").child(obj_id).get()
     if not image.val():
         abort(404)
