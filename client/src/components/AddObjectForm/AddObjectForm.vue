@@ -4,8 +4,6 @@
       <template #inputs>
         <UInput name="name">Name</UInput>
         <UInput name="descriptionObject">descriptionObject</UInput>
-        <UInput name="xObject">xObject</UInput>
-        <UInput name="yObject">yObject</UInput>
       </template>
     </UForm>
   </div>

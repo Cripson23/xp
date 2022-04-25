@@ -1,10 +1,19 @@
 <template>
-  <form ref="form" class="form" @submit.prevent="onSubmit" method="post">
-    <slot name="inputs"></slot>
+  <div class="form">
+    <h3 v-if="$slots.header" class="form__header">
+      <slot name="header"></slot>
+    </h3>
+    <form ref="form" method="post" @submit.prevent="onSubmit">
+      <slot name="inputs"></slot>
 
-    <UButton>Submit</UButton>
-  </form>
+      <UButton class="form__submit">
+        <slot name="submit-text">Отправить</slot>
+      </UButton>
+    </form>
+  </div>
 </template>
+
+<style lang="scss" src="./style.scss"></style>
 
 <script>
 import UButton from '../UButton/UButton';

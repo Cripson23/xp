@@ -5,21 +5,31 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-}
 
-.attractions-container {
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-
-  &--map {
+  &__actions {
+    z-index: 2;
+    background: white;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
   }
 
-  &--list {
-    width: 30%;
-    display: none;
+  &-container {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+
+    &--map {
+      width: 100%;
+    }
+
+    &--list {
+      width: 30%;
+      display: none;
+    }
   }
 }
 
@@ -34,4 +44,5 @@
   border-bottom-left-radius: var(--border-radios);
   border-top-left-radius: var(--border-radios);
   padding: 20px 30px;
+  z-index: 3;
 }

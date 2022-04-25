@@ -7,7 +7,14 @@
     >
       <slot></slot>
     </label>
-    <input :id="name" :name="name" :value="value" type="text" @input="$emit('input', $event)">
+    <input
+        class="input__input"
+        :id="id"
+        :name="name"
+        :value="value"
+        type="text"
+        @input="$emit('input', $event)"
+    >
   </div>
 </template>
 
@@ -23,6 +30,13 @@ export default {
     name: {
       type: String,
       required: true,
+    },
+    id: {
+      type: String,
+      required: false,
+      default: function() {
+        return this.name;
+      },
     },
   },
 };

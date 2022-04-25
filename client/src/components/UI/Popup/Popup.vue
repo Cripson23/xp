@@ -5,6 +5,7 @@
       <fa-icon icon="fa-solid fa-xmark" />
     </UButton>
     <div class="popup__container">
+      <h2 v-if="$slots.title"><slot name="title"></slot></h2>
       <slot name="content"></slot>
     </div>
   </div>

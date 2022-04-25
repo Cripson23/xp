@@ -13,6 +13,11 @@
     <div class="feature-details__body">
       {{feature.descriptionObject}}
     </div>
+
+    <div class="feature-details__footer" v-if="deleteAllowed || editAllowed">
+      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)">Delete</UButton>
+      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)">Edit</UButton>
+    </div>
   </aside>
 </template>
 
@@ -25,17 +30,22 @@ export default {
     feature: {
       type: Object,
       required: true,
-    }
+    },
+    deleteAllowed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    editAllowed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   components: {
     UButton
   },
-
-  mounted() {
-    console.log('this.feature: ', JSON.parse(JSON.stringify(this.feature)));
-
-  }
 };
 </script>
 

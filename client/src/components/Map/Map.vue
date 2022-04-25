@@ -16,10 +16,21 @@ export default {
       type: Array,
       required: true,
     },
+    isClickEmitRequired: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   mounted() {
     this.mapInit();
+  },
+
+  data() {
+    return {
+      markers: [],
+    };
   },
 
   methods: {
@@ -32,11 +43,11 @@ export default {
         zoom: 10,
         fadeDuration: 100,
         attributionControl: false,
-        maplibreLogo: false,
-        antialias: true,
-        renderWorldCopies: false,
+        // antialias: true,
+        // renderWorldCopies: false,
       });
       this.map.on('load', this.mapLoaded);
+      this.map.on('click', this.emitMapClick);
     },
 
     mapLoaded() {
@@ -50,7 +61,8 @@ export default {
         let marker = createElement({classList: ['marker']});
         marker.style.backgroundImage = `url(${SHLEPA_IMG_LINK})`;
         marker.addEventListener('click', () => this.$emit('featureClicked', feature));
-        new Marker(marker).setLngLat([feature.yObject, feature.xObject]).addTo(this.map).setPopup(popup);
+        marker = new Marker(marker).setLngLat([feature.yObject, feature.xObject]).addTo(this.map).setPopup(popup);
+        this.markers.push(marker);
       });
     },
 
@@ -59,14 +71,41 @@ export default {
     },
 
     getPopupElement(feature) {
-      let wrapper = createElement({tag: 'div', classList: ['list-view--horizontal', 'flex']});
+      let wrapper = createElement({tag: 'div', classList: ['list-view--vertical', 'flex']});
       let btn = createElement({tag: 'button', classList: ['map__balloon-button']});
       btn.innerText = 'Подробнее';
       wrapper.innerHTML = `<h1>${feature.name}</h1>`;
       btn.addEventListener('click', this.openDetails.bind(this, feature));
       wrapper.appendChild(btn);
       return wrapper;
-    }
+    },
+
+    updateMarkers() {
+      this.markers.forEach(marker => {
+        marker.remove();
+      });
+      this.fillFeatures();
+    },
+
+    emitMapClick(event) {
+      if (!this.isClickEmitRequired) {
+        return;
+      }
+
+      this.$emit(
+          'mapClicked',
+          {
+            xObject: event.lngLat.lat,
+            yObject: event.lngLat.lng,
+          },
+      );
+    },
+  },
+
+  watch: {
+    features: function() {
+      this.updateMarkers();
+    },
   },
 };
 </script>

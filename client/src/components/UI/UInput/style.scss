@@ -1,0 +1,19 @@
+.input {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  &__label {
+    margin-right: 10px;
+  }
+
+  &__input {
+    border: 1px solid #2c3e50;
+    border-radius: 5px;
+    padding: 3px 5px;
+  }
+}

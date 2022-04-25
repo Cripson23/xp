@@ -1,0 +1,16 @@
+.navigation {
+  z-index: 2;
+  background: white;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+
+  &__link {
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+  }
+}

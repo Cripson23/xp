@@ -1,17 +1,35 @@
 <template>
   <section class="attractions">
     <div class="attractions-container attractions-container--map">
-      <Map :features="getMapFeatures" @detailsClicked="openDetails"/>
+      <Map
+          :features="getMapFeatures"
+          :is-click-emit-required="isAddingObject"
+          @detailsClicked="openDetails"
+          @mapClicked="handleMapClick"
+      />
     </div>
 
     <transition name="slide-fade">
       <div v-if="featureSelected" class="feature-details__container">
-        <FeatureDetails :feature="featureSelected" @closeDetails="closeDetails"/>
+        <FeatureDetails
+            :delete-allowed="isDeleteAllowed"
+            :edit-allowed="isEditAllowed"
+            :feature="featureSelected"
+            @closeDetails="closeDetails"
+            @deleteFeature="handleDeleteFeature"
+            @editFeature="handleEditFeature"
+        />
       </div>
     </transition>
 
-    <Actions :actions="getActions" @addObjectClicked="openAddObjectPopup"></Actions>
+    <Actions
+        v-if="isLoggedIn"
+        :actions="getActions"
+        class="attractions__actions"
+        @addObjectClicked="setAddingObjectProcess"
+    ></Actions>
     <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
+      <template #title>Добавить объект</template>
       <template #content>
         <AddObjectForm @submit="handleCreateObject"></AddObjectForm>
       </template>
@@ -41,22 +59,27 @@ export default {
 
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          name: 111,
-        },
-      ],
       featureSelected: null,
       isAddObjectPopupOpened: false,
+      isAddingObject: false,
+      coords: null,
     };
   },
 
   methods: {
-    ...mapActions('features', ['fetchFeatures', 'createFeature']),
+    ...mapActions('features', ['fetchFeatures', 'createFeature', 'deleteFeature']),
 
     openDetails(feature) {
       this.featureSelected = feature;
+    },
+
+    setAddingObjectProcess() {
+      this.isAddingObject = !this.isAddingObject;
+    },
+
+    handleMapClick(coords) {
+      this.coords = coords;
+      this.openAddObjectPopup();
     },
 
     closeDetails() {
@@ -65,19 +88,36 @@ export default {
 
     openAddObjectPopup() {
       this.isAddObjectPopupOpened = true;
+      this.isAddingObject = false;
     },
+
     closePopup() {
       this.isAddObjectPopupOpened = false;
+      this.coords = null;
     },
 
     async handleCreateObject(data) {
-      let newFeatureData = Object.fromEntries(data.entries());
-      await this.createFeature(newFeatureData)
+      data.append('xObject', this.coords.xObject);
+      data.append('yObject', this.coords.yObject);
+      await this.createFeature(Object.fromEntries(data.entries()));
+      this.closePopup();
+    },
+
+    async handleDeleteFeature({id}) {
+      await this.deleteFeature(id);
+      this.closeDetails();
+    },
+
+    async handleEditFeature() {
+      // console.log(feature);
+      // console.log('feature: ', JSON.parse(JSON.stringify(feature)));
+
     },
   },
 
   computed: {
     ...mapGetters('features', ['getFeatures']),
+    ...mapGetters('user', ['isModerator', 'isLoggedIn']),
 
     getMapFeatures() {
       return this.getFeatures;
@@ -89,6 +129,14 @@ export default {
           text: 'Добавить объект',
           clickEventName: 'addObjectClicked',
         }];
+    },
+
+    isDeleteAllowed() {
+      return this.isModerator;
+    },
+
+    isEditAllowed() {
+      return this.isModerator;
     },
   },
 

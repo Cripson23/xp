@@ -33,3 +33,4 @@ export default {
 
 <style src="@/assets/style/reset.scss" lang="scss"></style>
 <style src="@/assets/style/transitions.scss" lang="scss"></style>
+<style src="@/assets/style/common.scss" lang="scss"></style>
