@@ -95,11 +95,6 @@ The request must contain: Form data - file, year
 /api/objects/<string:object_id>/upload-img/
 ```
 
-### Get all (moderated/unmoderated) images urls list by object ID [method=GET]
-```
-/api/objects/<string:object_id>/images/
-```
-
 ### Delete image by object ID and image ID [method=DELETE]
 ```
 /api/objects/<string:obj_id>/images/<string:img_id>/
