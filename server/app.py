@@ -19,6 +19,7 @@ UPLOAD_FOLDER = 'upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+
 def db_connect():
     firebase = pyrebase.initialize_app(config)
     firebase.auth()
@@ -27,6 +28,7 @@ def db_connect():
 
 db, storage = db_connect()
 auth = HTTPBasicAuth()
+
 
 # Авторизация
 @auth.verify_password
@@ -260,6 +262,10 @@ def upload_object_img(obj_id):
 
     date = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     filename = f"{obj_id}_{year}_{date}"
+
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
+
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
     if file and allowed_file(file.filename):
@@ -274,58 +280,6 @@ def upload_object_img(obj_id):
     os.remove(file_path)
 
     return jsonify({'result': True})
-
-
-# Получение всех изображений объекта
-@app.route('/api/objects/<string:obj_id>/images/', methods=['GET'])
-@cross_origin()
-def get_object_images(obj_id):
-    obj = db.child("objects").child(obj_id).get()
-    if not obj.val():
-        abort(404)
-
-    images = db.child("images").child(obj_id).get()
-    images_dict = {
-        'object_id': obj_id,
-        'images': {}
-    }
-
-    moderated = None
-
-    if not g.user['moderator'] or g.user is None:
-        moderated = True
-    elif g.user['moderator']:
-        moderated = False
-
-    if images.each() is not None:
-        for img in images.each():
-            year = img.key()
-            img_info = img.val()
-            for d in img.val().keys():
-                if moderated:
-                    if img_info[d]['moderate_status'] == moderated:
-                        if year not in images_dict['images']:
-                            images_dict['images'][year] = []
-
-                        url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
-                        images_dict['images'][year].append({
-                            'id': d,
-                            'user_id': img_info[d]['user_id'],
-                            'url': url
-                        })
-                elif not moderated:
-                    if year not in images_dict['images']:
-                        images_dict['images'][year] = []
-
-                    url = storage.child(obj_id).child(img_info[d]['path']).get_url(None)
-                    images_dict['images'][year].append({
-                        'id': d,
-                        'user_id': img_info[d]['user_id'],
-                        'url': url
-                    })
-
-
-    return jsonify(images_dict)
 
 
 @app.route('/api/objects/<string:obj_id>/images/<string:img_id>/', methods=['DELETE'])
