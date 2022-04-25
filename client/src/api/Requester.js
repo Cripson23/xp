@@ -53,14 +53,18 @@ export class Requester {
     entityPath = null,
     headers = {},
     body = null,
+    isFormData = false,
   }) {
+    if (!isFormData) {
+      body = body ? JSON.stringify(body) : null;
+    }
     return await fetch(`${baseUrl}${entityPath}`, {
       method,
       headers: {
         ...this._headers,
         ...headers,
       },
-      body: body ? JSON.stringify(body) : null,
+      body: body ? body : null,
     });
   }
 }

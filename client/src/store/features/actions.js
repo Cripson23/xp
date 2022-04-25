@@ -9,11 +9,12 @@ export default {
     );
   },
 
-  async createFeature({commit, rootGetters}, featureData) {
+  async createFeature({commit, rootGetters}, {featureData, images}) {
     commit(
         'pushFeature',
         await featureAPI.createFeature(
             featureData,
+            images,
             rootGetters['user/getToken'],
         ),
     );
@@ -22,5 +23,9 @@ export default {
   async deleteFeature({commit, rootGetters}, id) {
     await featureAPI.deleteFeature(id, rootGetters['user/getToken']);
     commit('removeFeature', id);
+  },
+
+  async fetchImages({rootGetters}, id) {
+    return await featureAPI.fetchImages(id, rootGetters['user/getToken']);
   },
 };

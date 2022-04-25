@@ -97,9 +97,19 @@ export default {
     },
 
     async handleCreateObject(data) {
+      let images = new FormData();
+
+      images.append('file', data.get('file'));
+      images.append('year', data.get('year'));
+      data.delete('file');
+      data.delete('year');
       data.append('xObject', this.coords.xObject);
       data.append('yObject', this.coords.yObject);
-      await this.createFeature(Object.fromEntries(data.entries()));
+      await this.createFeature({
+        featureData: Object.fromEntries(data.entries()),
+        images,
+      });
+
       this.closePopup();
     },
 
