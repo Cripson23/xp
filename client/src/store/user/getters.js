@@ -1,6 +1,6 @@
 export default {
   getUserData(state) {
-    return state.user
+    return state.user;
   },
 
   getToken(state) {
@@ -18,4 +18,4 @@ export default {
   isLoggedIn(state) {
     return !!state.user;
   },
-}
+};

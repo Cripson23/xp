@@ -1,12 +1,19 @@
 <template>
-  <aside class="feature-details">
+  <aside class="feature-details scroll--y">
     <div class="feature-details__header">
       <div class="feature-details__name">
         <h1>{{ feature.name }}</h1>
       </div>
 
-      <UButton :height="25" :width="25" class="feature-details__close" hover rounded @click="$emit('closeDetails')">
-        <fa-icon icon="fa-solid fa-xmark"/>
+      <UButton
+        :height="25"
+        :width="25"
+        class="feature-details__close"
+        hover
+        rounded
+        @click="$emit('closeDetails')"
+      >
+        <fa-icon icon="fa-solid fa-xmark" />
       </UButton>
     </div>
 
@@ -15,24 +22,33 @@
     </div>
 
     <div v-if="images" class="feature-details__images">
-      <Gallery :images="images"></Gallery>
+      <GalleryByYears :images="images"></GalleryByYears>
     </div>
 
-    <div v-if="deleteAllowed || editAllowed" class="feature-details__footer">
-      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)">Delete</UButton>
-      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)">Edit</UButton>
+    <div
+      v-if="deleteAllowed || editAllowed || addImagesAllowed"
+      class="feature-details__footer"
+    >
+      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)"
+        >Удалить</UButton
+      >
+      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)"
+        >Изменить</UButton
+      >
+      <UButton v-if="addImagesAllowed" @click="$emit('addImage', feature)"
+        >Добавить картинку</UButton
+      >
     </div>
   </aside>
 </template>
 
 <script>
-import {mapActions} from 'vuex';
-import UButton from '../UI/UButton/UButton';
-import Gallery from '../Gallery/Gallery';
-
+import { mapActions } from "vuex";
+import UButton from "../UI/UButton/UButton";
+import GalleryByYears from "../GalleryByYears/GalleryByYears";
 
 export default {
-  name: 'FeatureDetails',
+  name: "FeatureDetails",
   props: {
     feature: {
       type: Object,
@@ -48,6 +64,11 @@ export default {
       required: false,
       default: false,
     },
+    addImagesAllowed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -58,15 +79,19 @@ export default {
 
   components: {
     UButton,
-    Gallery,
+    GalleryByYears,
   },
 
   async mounted() {
     await this.fetchObjectImages();
+    console.log(
+      "this.addImagesAllowed: ",
+      JSON.parse(JSON.stringify(this.addImagesAllowed))
+    );
   },
 
   methods: {
-    ...mapActions('features', ['fetchImages']),
+    ...mapActions("features", ["fetchImages"]),
     async fetchObjectImages() {
       this.images = await this.fetchImages(this.feature.id);
     },
@@ -74,6 +99,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./style.scss">
-
-</style>
+<style lang="scss" src="./style.scss"></style>

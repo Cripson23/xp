@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
-    "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/vue-fontawesome": "^2.0.6",
     "core-js": "^3.6.5",
@@ -50,7 +49,13 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-unused-labels": "warn",
+      "no-unused-expressions": "warn",
+      "vue/no-unused-components": "warn",
+      "vue/no-unused-vars": "warn"
+    }
   },
   "browserslist": [
     "> 1%",

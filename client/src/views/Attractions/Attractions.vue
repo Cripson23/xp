@@ -2,31 +2,33 @@
   <section class="attractions">
     <div class="attractions-container attractions-container--map">
       <Map
-          :features="getMapFeatures"
-          :is-click-emit-required="isAddingObject"
-          @detailsClicked="openDetails"
-          @mapClicked="handleMapClick"
+        :features="getMapFeatures"
+        :is-click-emit-required="isAddingObject"
+        @detailsClicked="openDetails"
+        @mapClicked="handleMapClick"
       />
     </div>
 
     <transition name="slide-fade">
       <div v-if="featureSelected" class="feature-details__container">
         <FeatureDetails
-            :delete-allowed="isDeleteAllowed"
-            :edit-allowed="isEditAllowed"
-            :feature="featureSelected"
-            @closeDetails="closeDetails"
-            @deleteFeature="handleDeleteFeature"
-            @editFeature="handleEditFeature"
+          :add-images-allowed="isLoggedIn"
+          :delete-allowed="isModerator"
+          :edit-allowed="isModerator"
+          :feature="featureSelected"
+          @addImage="openAddImagePopup"
+          @closeDetails="closeDetails"
+          @deleteFeature="handleDeleteFeature"
+          @editFeature="handleEditFeature"
         />
       </div>
     </transition>
 
     <Actions
-        v-if="isLoggedIn"
-        :actions="getActions"
-        class="attractions__actions"
-        @addObjectClicked="setAddingObjectProcess"
+      v-if="isLoggedIn"
+      :actions="getActions"
+      class="attractions__actions"
+      @addObjectClicked="setAddingObjectProcess"
     ></Actions>
     <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
       <template #title>Добавить объект</template>
@@ -34,20 +36,27 @@
         <AddObjectForm @submit="handleCreateObject"></AddObjectForm>
       </template>
     </Popup>
+
+    <Popup v-if="isAddImagePopupOpened" @closePopup="closeAddImagePopup">
+      <template #title>Добавить картинку</template>
+      <template #content>
+        <AddImageForm @submit="handleAddImage"></AddImageForm>
+      </template>
+    </Popup>
   </section>
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
-import Map from '../../components/Map/Map';
-import FeatureDetails from '../../components/FeatureDetails/FeatureDetails';
-import Actions from '../../components/Actions/Actions';
-import Popup from '../../components/UI/Popup/Popup';
-import AddObjectForm from '../../components/AddObjectForm/AddObjectForm';
-
+import { mapActions, mapGetters } from "vuex";
+import Map from "../../components/Map/Map";
+import FeatureDetails from "../../components/FeatureDetails/FeatureDetails";
+import Actions from "../../components/Actions/Actions";
+import Popup from "../../components/UI/Popup/Popup";
+import AddObjectForm from "../../components/AddObjectForm/AddObjectForm";
+import AddImageForm from "../../components/AddImageForm/AddImageForm";
 
 export default {
-  name: 'Attractions',
+  name: "Attractions",
 
   components: {
     Map,
@@ -55,6 +64,7 @@ export default {
     Actions,
     Popup,
     AddObjectForm,
+    AddImageForm,
   },
 
   data() {
@@ -63,11 +73,17 @@ export default {
       isAddObjectPopupOpened: false,
       isAddingObject: false,
       coords: null,
+      isAddImagePopupOpened: false,
     };
   },
 
   methods: {
-    ...mapActions('features', ['fetchFeatures', 'createFeature', 'deleteFeature']),
+    ...mapActions("features", [
+      "fetchFeatures",
+      "createFeature",
+      "deleteFeature",
+      "addImage",
+    ]),
 
     openDetails(feature) {
       this.featureSelected = feature;
@@ -97,37 +113,41 @@ export default {
     },
 
     async handleCreateObject(data) {
-      let images = new FormData();
-
-      images.append('file', data.get('file'));
-      images.append('year', data.get('year'));
-      data.delete('file');
-      data.delete('year');
-      data.append('xObject', this.coords.xObject);
-      data.append('yObject', this.coords.yObject);
-      await this.createFeature({
-        featureData: Object.fromEntries(data.entries()),
-        images,
-      });
-
+      data.append("xObject", this.coords.xObject);
+      data.append("yObject", this.coords.yObject);
+      await this.createFeature(Object.fromEntries(data.entries()));
       this.closePopup();
     },
 
-    async handleDeleteFeature({id}) {
+    async handleDeleteFeature({ id }) {
       await this.deleteFeature(id);
       this.closeDetails();
+    },
+
+    openAddImagePopup() {
+      this.isAddImagePopupOpened = true;
+    },
+
+    closeAddImagePopup() {
+      this.isAddImagePopupOpened = false;
+    },
+
+    async handleAddImage(formData) {
+      await this.addImage({
+        id: this.featureSelected.id,
+        formData,
+      });
     },
 
     async handleEditFeature() {
       // console.log(feature);
       // console.log('feature: ', JSON.parse(JSON.stringify(feature)));
-
     },
   },
 
   computed: {
-    ...mapGetters('features', ['getFeatures']),
-    ...mapGetters('user', ['isModerator', 'isLoggedIn']),
+    ...mapGetters("features", ["getFeatures"]),
+    ...mapGetters("user", ["isModerator", "isLoggedIn"]),
 
     getMapFeatures() {
       return this.getFeatures;
@@ -136,17 +156,10 @@ export default {
     getActions() {
       return [
         {
-          text: 'Добавить объект',
-          clickEventName: 'addObjectClicked',
-        }];
-    },
-
-    isDeleteAllowed() {
-      return this.isModerator;
-    },
-
-    isEditAllowed() {
-      return this.isModerator;
+          text: "Добавить объект",
+          clickEventName: "addObjectClicked",
+        },
+      ];
     },
   },
 
@@ -156,6 +169,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./style.scss">
-
-</style>
+<style lang="scss" src="./style.scss"></style>

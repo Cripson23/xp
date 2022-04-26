@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faXmark)
 Vue.config.productionTip = false;
 Vue.component('fa-icon', FontAwesomeIcon)
-
 new Vue({
   router,
   store,

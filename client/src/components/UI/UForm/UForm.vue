@@ -3,7 +3,7 @@
     <h3 v-if="$slots.header" class="form__header">
       <slot name="header"></slot>
     </h3>
-    <form ref="form" method="post" @submit.prevent="onSubmit">
+    <form ref="form" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
       <slot name="inputs"></slot>
 
       <UButton class="form__submit">

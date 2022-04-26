@@ -55,15 +55,19 @@ export class Requester {
     body = null,
     isFormData = false,
   }) {
-    if (!isFormData) {
+    let requestHeaders = {
+      ...headers,
+      ...this._headers,
+    };
+    if (isFormData) {
+      delete requestHeaders['Content-Type'];
+    } else {
       body = body ? JSON.stringify(body) : null;
     }
+
     return await fetch(`${baseUrl}${entityPath}`, {
       method,
-      headers: {
-        ...this._headers,
-        ...headers,
-      },
+      headers: requestHeaders,
       body: body ? body : null,
     });
   }
