@@ -3,7 +3,7 @@ import time
 
 import pyrebase
 from config import config
-from flask import Flask, jsonify, abort, make_response, request, url_for, g
+from flask import Flask, jsonify, abort, make_response, request, url_for, g, session
 from flask_cors import CORS, cross_origin
 from flask_httpauth import HTTPBasicAuth
 import jwt
@@ -73,6 +73,7 @@ def verify_auth_token(token):
 @auth.login_required
 def get_token():
     token = generate_auth_token(auth.username(), 86400)
+    session.user = g.user
     return jsonify({"token": token, "duration": 86400, "moderator": g.user['moderator']})
 
 
@@ -138,10 +139,10 @@ def get_object(obj_id):
 
     images = db.child("images").child(obj_id).get()
 
-    if g is None:
+    if session is None:
         moderated = True
-    elif hasattr(g, 'user'):
-        if g.user['moderator']:
+    elif 'user' in session:
+        if session['user']['moderator']:
             moderated = False
         else:
             moderated = True
