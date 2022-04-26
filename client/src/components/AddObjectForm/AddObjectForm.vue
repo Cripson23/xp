@@ -1,32 +1,46 @@
 <template>
   <div class="add-object">
-    <UForm @submit="$emit('submit', $event)">
+    <UForm @submit="onSubmit">
       <template #inputs>
-        <UInput name="name">Название</UInput>
-        <UInput name="descriptionObject">Описание</UInput>
-        <UFileInput name="file"></UFileInput>
-        <UInput name="year">Год картинки</UInput>
+        <UInput :value="feature && feature.name" name="name">Название</UInput>
+        <UInput
+          :value="feature && feature.descriptionObject"
+          name="descriptionObject"
+          >Описание
+        </UInput>
       </template>
     </UForm>
   </div>
 </template>
 
 <script>
-import UForm from '../UI/UForm/UForm';
-import UInput from '../UI/UInput/UInput';
-import UFileInput from '../UI/UFileInput/UFileInput';
-
+import UForm from "../UI/UForm/UForm";
+import UInput from "../UI/UInput/UInput";
 
 export default {
-  name: 'AddObjectForm',
+  name: "AddObjectForm",
   components: {
     UForm,
     UInput,
-    UFileInput,
+  },
+
+  props: {
+    feature: {
+      type: Object,
+      required: false,
+    },
+  },
+
+  methods: {
+    onSubmit(event) {
+      let eventName = "submit";
+      if (this.feature) {
+        eventName = "edit";
+      }
+      this.$emit(eventName, event);
+    },
   },
 };
 </script>
 
-<style lang="scss" src="./style.scss">
-
-</style>
+<style lang="scss" src="./style.scss"></style>

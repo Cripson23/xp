@@ -29,13 +29,13 @@
       v-if="deleteAllowed || editAllowed || addImagesAllowed"
       class="feature-details__footer"
     >
-      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)"
-        >Удалить</UButton
-      >
-      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)"
+      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)" class="feature-details__action">
+        Удалить
+      </UButton>
+      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)" class="feature-details__action"
         >Изменить</UButton
       >
-      <UButton v-if="addImagesAllowed" @click="$emit('addImage', feature)"
+      <UButton v-if="addImagesAllowed" @click="$emit('addImage', feature)" class="feature-details__action"
         >Добавить картинку</UButton
       >
     </div>
@@ -84,10 +84,6 @@ export default {
 
   async mounted() {
     await this.fetchObjectImages();
-    console.log(
-      "this.addImagesAllowed: ",
-      JSON.parse(JSON.stringify(this.addImagesAllowed))
-    );
   },
 
   methods: {

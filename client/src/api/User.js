@@ -1,30 +1,19 @@
-import {Requester} from './Requester';
-
+import { Requester } from "./Requester";
 
 export class User extends Requester {
-
-  async authorize({username, password}) {
-    let response = await this.get('/login/', {
-      headers: {
-        ...this.getAuthHeader(`${username}:${password}`),
-      },
-    });
-
-    if (+response.status === 401) {
-      return {
-        status: false,
-        reason: 'Неверный логин/пароль',
-      };
-    }
-
+  async authorize({ username, password }) {
     let result = {
       status: false,
-      reason: 'Bad request',
+      reason: "Bad request",
     };
     try {
       result = {
         status: true,
-        data: await response.json(),
+        data: await this.get("/login/", {
+          headers: {
+            ...this.getAuthHeader(`${username}:${password}`),
+          },
+        }),
       };
     } catch (e) {
       console.log(e);
@@ -34,7 +23,6 @@ export class User extends Requester {
   }
 
   async register(userData) {
-    let response = await this.post('/register/', userData);
-    return await response.json();
+    return await this.post("/register/", userData);
   }
 }

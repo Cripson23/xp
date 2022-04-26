@@ -1,46 +1,46 @@
 export class Requester {
-  constructor({baseUrl = '/api', headers = {}}) {
+  constructor({ baseUrl = "/api", headers = {} }) {
     this._baseUrl = baseUrl;
     this._headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
     };
   }
 
   getAuthHeader(data) {
     return {
-      'Authorization': `Basic ${btoa(data)}`,
+      Authorization: `Basic ${btoa(data)}`,
     };
   }
 
-  async get(entityPath = '/', params = {}) {
+  async get(entityPath = "/", params = {}) {
     return await this.request({
-      method: 'get',
+      method: "get",
       entityPath,
       ...params,
     });
   }
 
-  async post(entityPath = '/', body = {}, params = {}) {
+  async post(entityPath = "/", body = {}, params = {}) {
     return await this.request({
-      method: 'post',
+      method: "post",
       body,
       entityPath,
       ...params,
     });
   }
 
-  async delete(entityPath = '/', params = {}) {
+  async delete(entityPath = "/", params = {}) {
     return await this.request({
-      method: 'delete',
+      method: "delete",
       entityPath,
       ...params,
     });
   }
 
-  async put(entityPath = '/', body = {}, params) {
+  async put(entityPath = "/", body = {}, params) {
     return await this.request({
-      method: 'put',
+      method: "put",
       entityPath,
       body,
       ...params,
@@ -48,7 +48,7 @@ export class Requester {
   }
 
   async request({
-    method = 'get',
+    method = "get",
     baseUrl = this._baseUrl,
     entityPath = null,
     headers = {},
@@ -60,15 +60,18 @@ export class Requester {
       ...this._headers,
     };
     if (isFormData) {
-      delete requestHeaders['Content-Type'];
+      delete requestHeaders["Content-Type"];
     } else {
       body = body ? JSON.stringify(body) : null;
     }
 
-    return await fetch(`${baseUrl}${entityPath}`, {
+    let result = await fetch(`${baseUrl}${entityPath}`, {
       method,
       headers: requestHeaders,
       body: body ? body : null,
     });
+
+    result = await result.json();
+    return result;
   }
 }

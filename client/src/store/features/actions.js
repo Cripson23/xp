@@ -20,6 +20,15 @@ export default {
     commit("removeFeature", id);
   },
 
+  async editFeature({ commit, rootGetters }, { id, data }) {
+    let res = await featureAPI.editFeature(
+      id,
+      data,
+      rootGetters["user/getToken"]
+    );
+    commit("editFeature", {id, feature: res})
+  },
+
   async fetchImages({ rootGetters }, id) {
     return await featureAPI.fetchImages(id, rootGetters["user/getToken"]);
   },

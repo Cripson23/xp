@@ -28,12 +28,16 @@
       v-if="isLoggedIn"
       :actions="getActions"
       class="attractions__actions"
-      @addObjectClicked="setAddingObjectProcess"
+      @addObjectClicked="startAdding"
     ></Actions>
     <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
       <template #title>Добавить объект</template>
       <template #content>
-        <AddObjectForm @submit="handleCreateObject"></AddObjectForm>
+        <AddObjectForm
+          @submit="handleCreateObject"
+          @edit="onEditFeature"
+          :feature="featureEditing"
+        ></AddObjectForm>
       </template>
     </Popup>
 
@@ -74,6 +78,7 @@ export default {
       isAddingObject: false,
       coords: null,
       isAddImagePopupOpened: false,
+      featureEditing: null,
     };
   },
 
@@ -83,14 +88,11 @@ export default {
       "createFeature",
       "deleteFeature",
       "addImage",
+      "editFeature",
     ]),
 
     openDetails(feature) {
       this.featureSelected = feature;
-    },
-
-    setAddingObjectProcess() {
-      this.isAddingObject = !this.isAddingObject;
     },
 
     handleMapClick(coords) {
@@ -107,9 +109,15 @@ export default {
       this.isAddingObject = false;
     },
 
+    startAdding() {
+      this.isAddingObject = true;
+    },
+
     closePopup() {
       this.isAddObjectPopupOpened = false;
+      this.isAddingObject = false;
       this.coords = null;
+      this.featureEditing = null;
     },
 
     async handleCreateObject(data) {
@@ -139,9 +147,14 @@ export default {
       });
     },
 
-    async handleEditFeature() {
-      // console.log(feature);
-      // console.log('feature: ', JSON.parse(JSON.stringify(feature)));
+    async handleEditFeature(feature) {
+      this.featureEditing = feature;
+      this.isAddObjectPopupOpened = true;
+    },
+
+    async onEditFeature(formData) {
+      let feature = Object.fromEntries(formData.entries());
+      await this.editFeature({ id: this.featureEditing.id, data: feature });
     },
   },
 

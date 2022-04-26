@@ -8,8 +8,7 @@ export class Feature extends Requester {
         ...this.getAuthHeader(token),
       };
     }
-    let result = await this.get("/objects/", { headers });
-    return await result.json();
+    return await this.get("/objects/", { headers });
   }
 
   async createFeature(featureData, token) {
@@ -19,8 +18,7 @@ export class Feature extends Requester {
         ...this.getAuthHeader(token),
       };
     }
-    let result = await this.post("/objects/", featureData, { headers });
-    return await result.json();
+    return await this.post("/objects/", featureData, { headers });
 
     // if (!Object.prototype.hasOwnProperty.call(result, 'id')) {
     //   return null;
@@ -48,6 +46,16 @@ export class Feature extends Requester {
     return await this.delete(`/objects/${id}`, { headers });
   }
 
+  async editFeature(id, data, token) {
+    let headers = null;
+    if (token) {
+      headers = {
+        ...this.getAuthHeader(token),
+      };
+    }
+    return await this.put(`/objects/${id}/`, data, { headers });
+  }
+
   async fetchImages(featureId, token) {
     let headers = null;
     if (token) {
@@ -57,7 +65,6 @@ export class Feature extends Requester {
     }
 
     let response = await this.get(`/objects/${featureId}/`, { headers });
-    response = await response.json();
     return response.images;
   }
 
@@ -73,10 +80,7 @@ export class Feature extends Requester {
       headers: headers,
       isFormData: true,
     });
-
-    response = await response.json();
     console.log("response: ", JSON.parse(JSON.stringify(response)));
-
     return response;
   }
 }
