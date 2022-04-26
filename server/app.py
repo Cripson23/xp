@@ -77,6 +77,13 @@ def get_token():
     return jsonify({"token": token, "duration": 86400, "moderator": g.user['moderator']})
 
 
+@app.route("/api/logout/", methods=['GET'])
+@auth.login_required
+def logout():
+    session.clear()
+    return jsonify({'result': True})
+
+
 @app.route('/api/register/', methods=['POST'])
 def register():
     # Check for blank requests
