@@ -1,9 +1,9 @@
 import os
 import time
-
+import base64
 import pyrebase
 from config import config
-from flask import Flask, jsonify, abort, make_response, request, url_for, g, session
+from flask import Flask, jsonify, abort, make_response, request, url_for, g
 from flask_cors import CORS, cross_origin
 from flask_httpauth import HTTPBasicAuth
 import jwt
@@ -19,6 +19,8 @@ UPLOAD_FOLDER = 'upload'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+def base64ToString(b):
+    return base64.b64decode(b).decode('utf-8')
 
 def db_connect():
     firebase = pyrebase.initialize_app(config)
@@ -59,7 +61,7 @@ def verify_auth_token(token):
     try:
         data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
     except Exception:
-        return
+        return None
 
     users = db.child("users").get()
     if users.each() is not None:
@@ -73,15 +75,7 @@ def verify_auth_token(token):
 @auth.login_required
 def get_token():
     token = generate_auth_token(auth.username(), 86400)
-    session['user'] = g.user
     return jsonify({"token": token, "duration": 86400, "moderator": g.user['moderator']})
-
-
-@app.route("/api/logout/", methods=['GET'])
-@auth.login_required
-def logout():
-    session.clear()
-    return jsonify({'result': True})
 
 
 @app.route('/api/register/', methods=['POST'])
@@ -146,13 +140,17 @@ def get_object(obj_id):
 
     images = db.child("images").child(obj_id).get()
 
-    if session is None:
+    if 'Authorization' in request.headers:
+        token = base64ToString(request.headers['Authorization'].split(' ')[1])
+    else:
+        token = None
+
+    user = verify_auth_token(token)
+
+    if user is None:
         moderated = True
-    elif 'user' in session:
-        if session['user']['moderator']:
-            moderated = False
-        else:
-            moderated = True
+    elif user['moderator']:
+        moderated = False
     else:
         moderated = True
 
