@@ -73,7 +73,7 @@ def verify_auth_token(token):
 @auth.login_required
 def get_token():
     token = generate_auth_token(auth.username(), 86400)
-    session.user = g.user
+    session['user'] = g.user
     return jsonify({"token": token, "duration": 86400, "moderator": g.user['moderator']})
 
 
