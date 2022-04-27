@@ -26,7 +26,7 @@ export default {
       data,
       rootGetters["user/getToken"]
     );
-    commit("editFeature", {id, feature: res})
+    commit("editFeature", { id, feature: res });
   },
 
   async fetchImages({ rootGetters }, id) {
@@ -36,5 +36,25 @@ export default {
   async addImage({ dispatch, rootGetters }, { id, formData }) {
     await featureAPI.addImage(id, formData, rootGetters["user/getToken"]);
     await dispatch("fetchImages", id);
+  },
+
+  async acceptImage({ rootGetters }, { imageId, objectId }) {
+    let res = await featureAPI.acceptImage(
+      { imageId, objectId },
+      rootGetters["user/getToken"]
+    );
+
+    console.log("res: ", JSON.parse(JSON.stringify(res)));
+    return true;
+  },
+
+  async deleteImage({ rootGetters }, { imageId, objectId }) {
+    let res = await featureAPI.deleteImage(
+      { imageId, objectId },
+      rootGetters["user/getToken"]
+    );
+
+    console.log("res: ", JSON.parse(JSON.stringify(res)));
+    return true;
   },
 };

@@ -20,6 +20,13 @@
     width: auto;
     cursor: pointer;
 
+    &--popup {
+      max-width: 70vw;
+      max-height: 70vh;
+      width: 100%;
+      height: auto;
+    }
+
     &-wrapper {
       border: 1px solid #2c3e50;
       border-radius: 12px;

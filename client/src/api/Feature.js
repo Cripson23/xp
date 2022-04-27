@@ -76,11 +76,39 @@ export class Feature extends Requester {
       };
     }
 
-    let response = await this.post(`/objects/${id}/upload-img/`, formData, {
+    return await this.post(`/objects/${id}/upload-img/`, formData, {
       headers: headers,
       isFormData: true,
     });
-    console.log("response: ", JSON.parse(JSON.stringify(response)));
-    return response;
+  }
+
+  async acceptImage({ imageId, objectId }, token) {
+    let headers = null;
+    if (token) {
+      headers = {
+        ...this.getAuthHeader(token),
+      };
+    }
+
+    return await this.put(
+      `/objects/${objectId}/images/${imageId}/`,
+      {
+        value: true,
+      },
+      { headers }
+    );
+  }
+
+  async deleteImage({ imageId, objectId }, token) {
+    let headers = null;
+    if (token) {
+      headers = {
+        ...this.getAuthHeader(token),
+      };
+    }
+
+    return await this.delete(`/objects/${objectId}/images/${imageId}/`, {
+      headers,
+    });
   }
 }

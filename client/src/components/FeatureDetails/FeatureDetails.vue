@@ -22,22 +22,36 @@
     </div>
 
     <div v-if="images" class="feature-details__images">
-      <GalleryByYears :images="images"></GalleryByYears>
+      <GalleryByYears
+        :images="images"
+        @imageAccept="onImageAccept"
+        @imageDelete="onImageDelete"
+      ></GalleryByYears>
     </div>
 
     <div
       v-if="deleteAllowed || editAllowed || addImagesAllowed"
       class="feature-details__footer"
     >
-      <UButton v-if="deleteAllowed" @click="$emit('deleteFeature', feature)" class="feature-details__action">
+      <UButton
+        v-if="deleteAllowed"
+        class="feature-details__action"
+        @click="$emit('deleteFeature', feature)"
+      >
         Удалить
       </UButton>
-      <UButton v-if="editAllowed" @click="$emit('editFeature', feature)" class="feature-details__action"
-        >Изменить</UButton
-      >
-      <UButton v-if="addImagesAllowed" @click="$emit('addImage', feature)" class="feature-details__action"
-        >Добавить картинку</UButton
-      >
+      <UButton
+        v-if="editAllowed"
+        class="feature-details__action"
+        @click="$emit('editFeature', feature)"
+        >Изменить
+      </UButton>
+      <UButton
+        v-if="addImagesAllowed"
+        class="feature-details__action"
+        @click="$emit('addImage', feature)"
+        >Добавить картинку
+      </UButton>
     </div>
   </aside>
 </template>
@@ -87,9 +101,23 @@ export default {
   },
 
   methods: {
-    ...mapActions("features", ["fetchImages"]),
+    ...mapActions("features", ["fetchImages", "acceptImage", "deleteImage"]),
     async fetchObjectImages() {
       this.images = await this.fetchImages(this.feature.id);
+    },
+
+    async onImageAccept(imageId) {
+      await this.acceptImage({
+        imageId,
+        objectId: this.feature.id,
+      });
+    },
+
+    async onImageDelete(imageId) {
+      await this.acceptImage({
+        imageId,
+        objectId: this.feature.id,
+      });
     },
   },
 };

@@ -1,0 +1,30 @@
+.gallery {
+  &__image {
+
+    &-action {
+
+      &-list {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      &-button {
+        width: 45%;
+
+        &--single {
+          width: 100%;
+        }
+
+        &--accept {
+          background-color: #00dc00;
+        }
+
+        &--delete {
+          background-color: red;
+        }
+      }
+    }
+  }
+}

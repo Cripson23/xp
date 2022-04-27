@@ -5,7 +5,11 @@
     </div>
     <div v-for="(images, year) in images" :key="year" class="gallery__year">
       <span class="gallery__year-title">{{ year }}</span>
-      <Gallery :images="images"></Gallery>
+      <Gallery
+        :images="images"
+        @imageAccept="$emit('imageAccept', $event)"
+        @imageDelete="$emit('imageDelete', $event)"
+      ></Gallery>
     </div>
   </section>
 </template>

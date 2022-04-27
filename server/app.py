@@ -179,7 +179,8 @@ def get_object(obj_id):
                     dict_obj['images'][year].append({
                         'id': d,
                         'user_id': img_info[d]['user_id'],
-                        'url': url
+                        'url': url,
+                        'is_moderated': img_info[d]['moderate_status']
                     })
     else:
         dict_obj['images'] = None
