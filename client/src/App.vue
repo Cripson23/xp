@@ -1,17 +1,27 @@
 <template>
   <div id="app">
-    <Navigation/>
+    <Navigation />
     <router-view />
   </div>
 </template>
 
 <script>
-import Navigation from './components/Navigation/Navigation';
+import Navigation from "./components/Navigation/Navigation";
+import { mapActions } from "vuex";
+
 export default {
   name: "App",
   components: {
     Navigation,
-  }
+  },
+
+  methods: {
+    ...mapActions("user", ["restoreUserOnReload"]),
+  },
+
+  beforeMount() {
+    this.restoreUserOnReload();
+  },
 };
 </script>
 
@@ -31,6 +41,6 @@ export default {
 }
 </style>
 
-<style src="@/assets/style/reset.scss" lang="scss"></style>
-<style src="@/assets/style/transitions.scss" lang="scss"></style>
-<style src="@/assets/style/common.scss" lang="scss"></style>
+<style lang="scss" src="@/assets/style/reset.scss"></style>
+<style lang="scss" src="@/assets/style/transitions.scss"></style>
+<style lang="scss" src="@/assets/style/common.scss"></style>

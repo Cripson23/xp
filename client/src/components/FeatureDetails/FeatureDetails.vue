@@ -96,10 +96,6 @@ export default {
     GalleryByYears,
   },
 
-  async mounted() {
-    await this.fetchObjectImages();
-  },
-
   methods: {
     ...mapActions("features", ["fetchImages", "acceptImage", "deleteImage"]),
     async fetchObjectImages() {
@@ -118,6 +114,16 @@ export default {
         imageId,
         objectId: this.feature.id,
       });
+    },
+  },
+
+  watch: {
+    feature: {
+      async handler() {
+        this.images = null;
+        await this.fetchObjectImages();
+      },
+      immediate: true,
     },
   },
 };
