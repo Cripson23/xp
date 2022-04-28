@@ -35,7 +35,7 @@ export default {
 
   async addImage({ dispatch, rootGetters }, { id, formData }) {
     await featureAPI.addImage(id, formData, rootGetters["user/getToken"]);
-    await dispatch("fetchImages", id);
+    return await dispatch("fetchImages", id);
   },
 
   async acceptImage({ rootGetters }, { imageId, objectId }) {
@@ -44,8 +44,7 @@ export default {
       rootGetters["user/getToken"]
     );
 
-    console.log("res: ", JSON.parse(JSON.stringify(res)));
-    return true;
+    return res.result;
   },
 
   async deleteImage({ rootGetters }, { imageId, objectId }) {
@@ -54,7 +53,6 @@ export default {
       rootGetters["user/getToken"]
     );
 
-    console.log("res: ", JSON.parse(JSON.stringify(res)));
-    return true;
+    return res.result;
   },
 };

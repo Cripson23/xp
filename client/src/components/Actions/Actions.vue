@@ -1,23 +1,26 @@
 <template>
   <div class="actions">
-    <span v-for="(action, index) in actions" :key="index" @click="$emit(action.clickEventName)">
-      {{action.text}}
+    <span
+      v-for="(action, index) in actions"
+      :key="index"
+      @click="$emit(action.clickEventName)"
+      class="actions__action"
+    >
+      {{ action.text }}
     </span>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Actions',
+  name: "Actions",
   props: {
     actions: {
       type: Array,
       required: true,
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style src="./style.scss" lang="scss">
-
-</style>
+<style src="./style.scss" lang="scss"></style>

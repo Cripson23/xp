@@ -31,6 +31,8 @@
       border: 1px solid #2c3e50;
       border-radius: 12px;
       overflow: clip;
+      display: flex;
+      flex-direction: column;
 
 
       &:not(:last-child) {

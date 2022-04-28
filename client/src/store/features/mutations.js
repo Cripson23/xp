@@ -8,17 +8,17 @@ export default {
   },
 
   removeFeature(state, id) {
-    let index = state.features.findIndex(feature => feature.id === id);
+    let index = state.features.findIndex((feature) => feature.id === id);
     if (index > -1) {
       state.features.splice(index, 1);
     }
   },
 
-  editFeature(state, {id, feature}) {
-    let index = state.features.findIndex(feature => feature.id === id);
+  editFeature(state, { id, feature }) {
+    let index = state.features.findIndex((feature) => feature.id === id);
     if (index > -1) {
       state.features[index].name = feature.name;
       state.features[index].descriptionObject = feature.descriptionObject;
     }
-  }
-}
+  },
+};

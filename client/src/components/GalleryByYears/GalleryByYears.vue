@@ -7,8 +7,8 @@
       <span class="gallery__year-title">{{ year }}</span>
       <Gallery
         :images="images"
-        @imageAccept="$emit('imageAccept', $event)"
-        @imageDelete="$emit('imageDelete', $event)"
+        @imageAccept="$emit('imageAccept', { imageId: $event, year })"
+        @imageDelete="$emit('imageDelete', { imageId: $event, year })"
       ></Gallery>
     </div>
   </section>

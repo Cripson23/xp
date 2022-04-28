@@ -49,10 +49,17 @@
       <UButton
         v-if="addImagesAllowed"
         class="feature-details__action"
-        @click="$emit('addImage', feature)"
+        @click="openAddImagePopup"
         >Добавить картинку
       </UButton>
     </div>
+
+    <Popup v-if="isAddImagePopupOpened" @closePopup="closeAddImagePopup">
+      <template #title>Добавить картинку</template>
+      <template #content>
+        <AddImageForm @submit="handleAddImage"></AddImageForm>
+      </template>
+    </Popup>
   </aside>
 </template>
 
@@ -60,6 +67,9 @@
 import { mapActions } from "vuex";
 import UButton from "../UI/UButton/UButton";
 import GalleryByYears from "../GalleryByYears/GalleryByYears";
+import Popup from "../UI/Popup/Popup";
+import AddImageForm from "../AddImageForm/AddImageForm";
+import Vue from "vue";
 
 export default {
   name: "FeatureDetails",
@@ -88,32 +98,82 @@ export default {
   data() {
     return {
       images: null,
+      isAddImagePopupOpened: false,
     };
   },
 
   components: {
     UButton,
     GalleryByYears,
+    Popup,
+    AddImageForm,
   },
 
   methods: {
-    ...mapActions("features", ["fetchImages", "acceptImage", "deleteImage"]),
+    ...mapActions("features", [
+      "fetchImages",
+      "acceptImage",
+      "deleteImage",
+      "addImage",
+    ]),
     async fetchObjectImages() {
       this.images = await this.fetchImages(this.feature.id);
     },
 
-    async onImageAccept(imageId) {
-      await this.acceptImage({
+    async onImageAccept({ imageId, year }) {
+      let acceptResult = await this.acceptImage({
         imageId,
         objectId: this.feature.id,
       });
+
+      let imageIndex = this.images[year].findIndex(
+        (image) => image.id === imageId
+      );
+
+      if (imageIndex < 0) {
+        return;
+      }
+      Vue.set(this.images[year][imageIndex], "is_moderated", acceptResult);
     },
 
-    async onImageDelete(imageId) {
-      await this.acceptImage({
+    async onImageDelete({ imageId, year }) {
+      await this.deleteImage({
         imageId,
         objectId: this.feature.id,
       });
+
+      let imageIndex = this.images[year].findIndex(
+        (image) => image.id === imageId
+      );
+      if (imageIndex < 0) {
+        return;
+      }
+
+      if (this.images[year].length === 1) {
+        Vue.delete(this.images, year);
+
+        if (Object.keys(this.images).length === 0) {
+          this.images = null;
+        }
+      }
+      this.images[year].splice(imageIndex, 1);
+    },
+
+    closeAddImagePopup() {
+      this.isAddImagePopupOpened = false;
+    },
+
+    openAddImagePopup() {
+      this.isAddImagePopupOpened = true;
+    },
+
+    async handleAddImage(formData) {
+      this.images = await this.addImage({
+        id: this.feature.id,
+        formData,
+      });
+
+      this.closeAddImagePopup();
     },
   },
 

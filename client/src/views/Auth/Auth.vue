@@ -13,6 +13,7 @@
 import AuthForm from "../../components/AuthForm/AuthForm";
 import UButton from "../../components/UI/UButton/UButton";
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "Auth",
   components: {
