@@ -70,9 +70,5 @@
       "vue-cli-service lint",
       "git add"
     ]
-  },
-  "description": "```\r npm install\r ```",
-  "main": "babel.config.js",
-  "author": "",
-  "license": "ISC"
+  }
 }

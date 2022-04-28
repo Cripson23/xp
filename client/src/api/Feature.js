@@ -93,7 +93,7 @@ export class Feature extends Requester {
     return await this.put(
       `/objects/${objectId}/images/${imageId}/`,
       {
-        value: true,
+        moderate_status: true,
       },
       { headers }
     );
