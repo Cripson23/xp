@@ -128,6 +128,16 @@ def get_objects():
     return jsonify(objects)
 
 
+def get_user_by_token(request):
+    if 'Authorization' in request.headers:
+        token = base64ToString(request.headers['Authorization'].split(' ')[1])
+    else:
+        token = None
+
+    user = verify_auth_token(token)
+    return user
+
+
 @app.route('/api/objects/<string:obj_id>/', methods=['GET'])
 @cross_origin()
 def get_object(obj_id):
@@ -140,12 +150,7 @@ def get_object(obj_id):
 
     images = db.child("images").child(obj_id).get()
 
-    if 'Authorization' in request.headers:
-        token = base64ToString(request.headers['Authorization'].split(' ')[1])
-    else:
-        token = None
-
-    user = verify_auth_token(token)
+    user = get_user_by_token(request)
 
     if user is None:
         moderated = True
@@ -293,7 +298,8 @@ def upload_object_img(obj_id):
 @auth.login_required
 @cross_origin()
 def delete_image(obj_id, img_id):
-    if not g.user['moderator']:
+    user = get_user_by_token(request)
+    if not user['moderator']:
         abort(403)
     image = db.child("images").child(obj_id).get()
     if not image.val():
@@ -328,7 +334,8 @@ def delete_image(obj_id, img_id):
 @auth.login_required
 @cross_origin()
 def change_img_moder_status(obj_id, img_id):
-    if not g.user['moderator']:
+    user = get_user_by_token(request)
+    if not user['moderator']:
         abort(403)
 
     image = db.child("images").child(obj_id).get()
