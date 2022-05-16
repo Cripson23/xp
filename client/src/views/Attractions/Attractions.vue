@@ -31,7 +31,7 @@
       @addObjectClicked="toggleAdding"
     ></Actions>
     <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
-      <template #title>Добавить объект</template>
+      <template #title>{{ getFormTitle }}</template>
       <template #content>
         <AddObjectForm
           @submit="handleCreateObject"
@@ -132,8 +132,10 @@ export default {
     },
 
     async onEditFeature(formData) {
-      let feature = Object.fromEntries(formData.entries());
-      await this.editFeature({ id: this.featureEditing.id, data: feature });
+      await this.editFeature({
+        id: this.featureEditing.id,
+        data: Object.fromEntries(formData.entries()),
+      });
     },
   },
 
@@ -160,6 +162,14 @@ export default {
       }
 
       return "Кликните по карте для выбора точки, или сюда, чтобы прекратить добавление";
+    },
+
+    getFormTitle() {
+      if (!this.featureEditing) {
+        return "Добавить объект";
+      }
+
+      return "Изменить объект";
     },
   },
 

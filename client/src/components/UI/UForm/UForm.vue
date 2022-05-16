@@ -3,7 +3,12 @@
     <h3 v-if="$slots.header" class="form__header">
       <slot name="header"></slot>
     </h3>
-    <form ref="form" method="post" @submit.prevent="onSubmit" enctype="multipart/form-data">
+    <form
+      ref="form"
+      enctype="multipart/form-data"
+      method="post"
+      @submit.prevent="onSubmit"
+    >
       <slot name="inputs"></slot>
 
       <UButton class="form__submit">
@@ -16,17 +21,16 @@
 <style lang="scss" src="./style.scss"></style>
 
 <script>
-import UButton from '../UButton/UButton';
-
+import UButton from "../UButton/UButton";
 
 export default {
-  name: 'UForm',
+  name: "UForm",
   components: {
     UButton,
   },
   methods: {
     onSubmit() {
-      this.$emit('submit', new FormData(this.$refs.form));
+      this.$emit("submit", new FormData(this.$refs.form));
     },
   },
 };
