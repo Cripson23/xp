@@ -28,23 +28,16 @@
       v-if="isLoggedIn"
       :actions="getActions"
       class="attractions__actions"
-      @addObjectClicked="startAdding"
+      @addObjectClicked="toggleAdding"
     ></Actions>
     <Popup v-if="isAddObjectPopupOpened" @closePopup="closePopup">
-      <template #title>Добавить объект</template>
+      <template #title>{{ getFormTitle }}</template>
       <template #content>
         <AddObjectForm
           @submit="handleCreateObject"
           @edit="onEditFeature"
           :feature="featureEditing"
         ></AddObjectForm>
-      </template>
-    </Popup>
-
-    <Popup v-if="isAddImagePopupOpened" @closePopup="closeAddImagePopup">
-      <template #title>Добавить картинку</template>
-      <template #content>
-        <AddImageForm @submit="handleAddImage"></AddImageForm>
       </template>
     </Popup>
   </section>
@@ -57,7 +50,6 @@ import FeatureDetails from "../../components/FeatureDetails/FeatureDetails";
 import Actions from "../../components/Actions/Actions";
 import Popup from "../../components/UI/Popup/Popup";
 import AddObjectForm from "../../components/AddObjectForm/AddObjectForm";
-import AddImageForm from "../../components/AddImageForm/AddImageForm";
 
 export default {
   name: "Attractions",
@@ -68,7 +60,6 @@ export default {
     Actions,
     Popup,
     AddObjectForm,
-    AddImageForm,
   },
 
   data() {
@@ -87,7 +78,6 @@ export default {
       "fetchFeatures",
       "createFeature",
       "deleteFeature",
-      "addImage",
       "editFeature",
     ]),
 
@@ -109,8 +99,8 @@ export default {
       this.isAddingObject = false;
     },
 
-    startAdding() {
-      this.isAddingObject = true;
+    toggleAdding() {
+      this.isAddingObject = !this.isAddingObject;
     },
 
     closePopup() {
@@ -136,25 +126,16 @@ export default {
       this.isAddImagePopupOpened = true;
     },
 
-    closeAddImagePopup() {
-      this.isAddImagePopupOpened = false;
-    },
-
-    async handleAddImage(formData) {
-      await this.addImage({
-        id: this.featureSelected.id,
-        formData,
-      });
-    },
-
     async handleEditFeature(feature) {
       this.featureEditing = feature;
       this.isAddObjectPopupOpened = true;
     },
 
     async onEditFeature(formData) {
-      let feature = Object.fromEntries(formData.entries());
-      await this.editFeature({ id: this.featureEditing.id, data: feature });
+      await this.editFeature({
+        id: this.featureEditing.id,
+        data: Object.fromEntries(formData.entries()),
+      });
     },
   },
 
@@ -169,10 +150,26 @@ export default {
     getActions() {
       return [
         {
-          text: "Добавить объект",
+          text: this.addObjectText,
           clickEventName: "addObjectClicked",
         },
       ];
+    },
+
+    addObjectText() {
+      if (!this.isAddingObject) {
+        return "Добавить объект";
+      }
+
+      return "Кликните по карте для выбора точки, или сюда, чтобы прекратить добавление";
+    },
+
+    getFormTitle() {
+      if (!this.featureEditing) {
+        return "Добавить объект";
+      }
+
+      return "Изменить объект";
     },
   },
 

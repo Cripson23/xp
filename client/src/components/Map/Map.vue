@@ -9,7 +9,7 @@ import { createElement } from "../../utils";
 // ЭТО НЕБЕЗОПАСНО (с), но в энв файлы тупо лень выносить
 const API_KEY = "hWQhKrQw4Ec9RBKVMtoJ";
 const SHLEPA_IMG_LINK =
-  "https://www.meme-arsenal.com/memes/9de9299d40f76bcc4d9bc825b7a89590.jpg";
+  "https://memepedia.ru/wp-content/uploads/2020/10/big-floppa-meme.png";
 export default {
   name: "Map",
   props: {
