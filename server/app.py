@@ -34,14 +34,15 @@ auth = HTTPBasicAuth()
 
 # Авторизация
 @auth.verify_password
-def verify_password(username_or_token, password):
-    user = verify_auth_token(username_or_token)
+def verify_password(username, password):
+    token = get_token_by_request(request)
+    user = verify_auth_token(token)
 
     if user is None:
         users = db.child("users").get()
         if users.each() is not None:
             for u in users.each():
-                if u.val()['username'] == username_or_token:
+                if u.val()['username'] == username:
                     user = u.val()
                     user['id'] = u.key()
         if not user or not check_password_hash(user['hash_password'], password):
@@ -67,7 +68,9 @@ def verify_auth_token(token):
     if users.each() is not None:
         for u in users.each():
             if u.val()['username'] == data['id']:
-                return u.val()
+                user = u.val()
+                user['id'] = u.key()
+                return user
 
 
 # Users
@@ -98,19 +101,32 @@ def register():
     gender = request.json['gender']
     birthday = request.json['birthday']
 
-    user = {
-        'username': username,
-        'hash_password': generate_password_hash(password),
-        'fio': fio,
-        'gender': gender,
-        'birthday': birthday,
-        'moderator': False
-    }
+    errors = []
+    if len(username) < 3 or len(username) > 30:
+        errors.append('login length must be from 3 to 30 characters')
+    if len(fio) < 10 or len(fio) > 60:
+        errors.append('fio length must be between 3 and 30 characters')
+    if gender not in ['man', 'woman']:
+        errors.append('incorrect gender')
+    if len(birthday) != 10:
+        errors.append('incorrect birthday date')
 
-    user_id = db.child("users").push(user)['name']
-    user['id'] = user_id
+    if len(errors) > 0:
+        return jsonify({'errors': errors}), 400
+    else:
+        user = {
+            'username': username,
+            'hash_password': generate_password_hash(password),
+            'fio': fio,
+            'gender': gender,
+            'birthday': birthday,
+            'moderator': False
+        }
 
-    return jsonify(user), 201
+        user_id = db.child("users").push(user)['name']
+        user['id'] = user_id
+
+        return jsonify(user), 201
 
 
 # Objects
@@ -119,20 +135,28 @@ def register():
 def get_objects():
     all_objects = db.child("objects").get()
 
-    objects = []
-    for obj in all_objects.each():
-        dict_obj = obj.val()
-        dict_obj['id'] = obj.key()
-        objects.append(dict_obj)
+    if all_objects.each() is not None:
+        objects = []
+        for obj in all_objects.each():
+            dict_obj = obj.val()
+            dict_obj['id'] = obj.key()
+            objects.append(dict_obj)
 
-    return jsonify(objects)
+        return jsonify(objects)
+    else:
+        return jsonify(None)
 
 
-def get_user_by_token(request):
+def get_token_by_request(request):
     if 'Authorization' in request.headers:
         token = base64ToString(request.headers['Authorization'].split(' ')[1])
     else:
         token = None
+
+    return token
+
+def get_user_by_token(request):
+    token = get_token_by_request(request)
 
     user = verify_auth_token(token)
     return user
@@ -197,6 +221,10 @@ def get_object(obj_id):
 @auth.login_required
 @cross_origin()
 def create_object():
+    user = get_user_by_token(request)
+    if not user['moderator']:
+        abort(403)
+
     if not request.json or 'name' not in request.json or 'xObject' not in request.json or 'yObject' not in request.json \
             or 'descriptionObject' not in request.json:
         abort(400)
@@ -272,6 +300,11 @@ def upload_object_img(obj_id):
     file = request.files['file']
     year = request.form['year']
 
+    try:
+        year = int(year)
+    except ValueError:
+        return jsonify({'error': 'year must be int'}), 400
+
     date = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     filename = f"{obj_id}_{year}_{date}"
 
@@ -285,7 +318,7 @@ def upload_object_img(obj_id):
     else:
         abort(400)
 
-    save_path = year + "_" + date
+    save_path = str(year) + "_" + date
     storage.child(obj_id).child(save_path).put(file_path)
     db.child("images").child(obj_id).child(year).push({'user_id': g.user['id'], 'path': save_path, 'moderate_status': False})
 
