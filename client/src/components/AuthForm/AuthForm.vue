@@ -9,6 +9,10 @@
         <UInput name="password">Пароль</UInput>
       </template>
     </UForm>
+
+    <div class="auth-form__error-text">
+      {{ errorText }}
+    </div>
   </div>
 </template>
 
@@ -18,11 +22,20 @@
 import UInput from '../UI/UInput/UInput';
 import UForm from '../UI/UForm/UForm';
 
+
 export default {
   name: 'AuthForm',
   components: {
     UInput,
-    UForm
+    UForm,
+  },
+
+  props: {
+    errorText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 };
 </script>
